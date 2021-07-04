@@ -21,8 +21,8 @@ def trainer(sentences_dict):
 
 def generate_sentences(num_sentences):
     data = {}
-    for i in range(1, num_sentences+1):
-        data["Level"+str(i)] = {"sentence": generate_strings(i), "time": i+1}
+    for i in range(1, num_sentences + 1):
+        data["Level" + str(i)] = {"sentence": generate_strings(i), "time": i+0.5}
     return data
 
 
@@ -30,7 +30,7 @@ def generate_strings(length):
     letters = string.ascii_letters
     digits = string.digits
     output = ""
-    for i in range(1, length+1):
+    for i in range(1, length + 1):
         output += random.choice(letters + digits)
     return output
 
@@ -43,6 +43,24 @@ def format_value(formatter):
         else:
             new[key] = ["Incorrect", value[1]]
     return new
+
+
+def line_graph(frame):
+    choice = input("\nWould you like to have a line graph of your results? Y/N ")[0].lower()
+    font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
+    if choice == 'y':
+        x_points = []
+        y_points = []
+        for key, value in frame.items():
+            x_points.append(key)
+            y_points.append(value[1])
+        plt.plot(x_points, y_points, marker='o')
+        plt.xlabel("Level", fontdict=font1)
+        plt.ylabel("Time Taken", fontdict=font1)
+        plt.title("Time Taken per Level graph", fontdict=font1)
+        plt.show()
+        print("Goodbye!")
+        sys.exit()
 
 
 def graph_bar(frame):
@@ -60,11 +78,10 @@ def graph_bar(frame):
 
         plt.bar(x, y)
         plt.show()
-        print("Goodbye!!")
+        line_graph(frame)
         sys.exit()
     else:
-        print("Ok goodbye!!")
-        sys.exit()
+        line_graph(frame)
 
 
 if __name__ == '__main__':
@@ -75,6 +92,7 @@ if __name__ == '__main__':
             results = trainer(sentences)
             formatted = format_value(results)
             dataframe = pd.DataFrame(formatted, index=["Result", "TimeTaken"])
+            pd.set_option("display.max_rows", None, "display.max_columns", None)
             print(dataframe)
             graph_bar(results)
         except ValueError:
